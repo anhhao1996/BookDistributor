@@ -1,0 +1,69 @@
+﻿@model PHSach.Models.Bill_Export
+
+@{
+    ViewBag.Title = "ThemChiTietPhieuXuat";
+    var dsCtPx = (List<PHSach.Models.Detail_Bill_Export>)Session["ctphieuxuat"];
+}
+
+<h2>Thêm chi tiết phiếu xuất</h2>
+<div class="x_content">
+    @using (Html.BeginForm("ThemChiTietPhieuXuat", "Bill_Export", FormMethod.Post))
+    {
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.AntiForgeryToken()
+        <div class="form-group col-sm-10">
+            <div class="col-sm-6">
+                <label for="disabledInput">Mã sách</label>
+                @Html.DropDownList("sach", null, htmlAttributes: new { @id = "masach", @name = "masach", @class = "form-control" })
+                @*<input id="masach" name="masach" type="number" class="form-control col-md-7 col-xs-12" />*@
+            </div>
+        </div>
+        <div class="form-group col-sm-10">
+            <div class="col-sm-6">
+                <label for="disabledInput">Số lượng</label>
+                <input id="soluong" name="soluong" type="number" value="1" class="form-control col-md-7 col-xs-12" />
+            </div>
+        </div>
+                            <div class="form-group">
+                                
+                                <div class="col-md-5 col-sm-5 col-xs-12 col-md-offset-3">
+                                    <div class="form-group">
+                                        <button id="next" type="submit" class="btn btn-primary" name="add">Thêm</button>
+                                        <button id="next" class="btn btn-primary" name="create">Lưu phiếu</button>
+                                        <a class="btn btn-primary btnThemPhieuXuat" href="~/Bill_Export/Index">Hủy phiếu</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <b style="color:red;">@ViewBag.loi</b>
+                                </div>
+                            </div>
+                            <table id="chitiet" class="table table-striped table-bordered bulk_action">
+                                <thead>
+                                    <tr>
+                                        <td>ID Sách</td>
+                                        <td>Số lượng xuất</td>
+                                        <td>Đơn giá xuất</td>
+                                        <td>Tổng cộng</td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (dsCtPx != null)
+                                    {
+                                        foreach (var ct in dsCtPx)
+                                        {
+                                            <tr>
+                                                <td>@ct.Book_id</td>
+                                                <td>@ct.Quantity</td>
+                                                <td>@ct.Cost</td>
+                                                <td>@ct.Total</td>                                     
+                                                <td>@Html.ActionLink("Xóa", "Deletectpx", new { bookid = @ct.Book_id },null)</td>                                                                                         
+                                            </tr>
+                                        }
+                                    }         
+                                </tbody>
+                            </table>
+    }
+</div>

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<PHSach.Models.Bill_Import>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Danh sách phiếu nhập</h2>
+
+<p>
+    <a class="btn btn-primary btnThemPhieuNhapp" href="~/Bill_Import/Create">Thêm phiếu nhập</a>
+</p>
+<table class="table" border="1">
+    <tr>
+        <th>
+            Mã Phiếu Nhập
+        </th>
+        <th>
+            Tên Nhà Xuất Bản        
+        </th>
+        <th>
+           Người Giao Hàng
+        </th>
+        <th>
+            Ngày tạo đơn
+        </th>
+        <th>
+            Tổng Cộng
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bill_Import_id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NXB.NXB_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Deliver)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Total)            
+        </td>
+        <td>
+            @Html.ActionLink("Chi tiết", "Details", new { id = item.Bill_Import_id })
+        </td>
+    </tr>
+}
+
+</table>

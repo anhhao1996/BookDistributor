@@ -1,0 +1,46 @@
+﻿@model PHSach.Models.Bill_Import
+
+@{
+    ViewBag.Title = "Details";
+    var a = (List<PHSach.Models.Detail_Bill_Import>)ViewBag.ctpn;
+}
+
+<h2>Chi tiết phiếu nhập</h2>
+
+<div>
+    <a class="btn btn-primary btnThemPhieuNhapp" href="~/Bill_Import/Index">Quay về</a>
+    <hr />
+    <table class="table" border="1">
+    <tr>
+        <th>
+            Mã sách
+        </th>
+        <th>
+            Số lượng         
+        </th>
+        <th>
+            Giá nhập
+        </th>
+        <th>
+            Thành tiền
+        </th>
+    </tr>
+
+@foreach (var item in a) {
+    <tr>
+        <td>
+            @item.Book_id
+        </td>
+        <td>
+            @item.Quantity
+        </td>
+        <td>
+            @item.Cost
+        </td>
+        <td>
+            @item.Total         
+        </td>
+    </tr>
+}
+
+</table>

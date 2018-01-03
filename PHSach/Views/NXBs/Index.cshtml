@@ -1,0 +1,35 @@
+﻿@model IEnumerable<PHSach.Models.NXB>
+
+@{
+    ViewBag.Title = "Phiếu nợ NXB";
+}
+<h2>Danh sách NXB</h2>
+<div class="col-md-12 phieunhaptb">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Tên NXB</th>
+                <th>Địa chỉ</th>
+                <th>Số tài khoản</th>
+                <th>Số điện thoại</th>
+                <th>Emaik</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.NXB_name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                <td>@Html.DisplayFor(modelItem => item.AcountNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.NXB_id })
+                </td>
+            </tr>
+            }         
+        </tbody>
+    </table>
+</div>

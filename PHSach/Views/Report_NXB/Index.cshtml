@@ -1,0 +1,47 @@
+﻿@model IEnumerable<PHSach.Models.Report_NXB>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Phiếu nợ NXB</h2>
+
+<table class="table" border="1">
+    <tr>
+        <th>
+            Tên NXB
+        </th>
+        <th>
+            Ngày cập nhật
+        </th>
+        <th>
+            Số tiền nợ
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.NXB.NXB_name)        
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.update_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.total)
+        </td>
+        <td>
+            @if (item.status == 0)
+            {
+                @Html.ActionLink("Thanh toán", "Edit", new { id = item.Report_id }) 
+            }
+            else
+            {
+                <b>Đã thanh toán</b>
+            }
+        </td>
+    </tr>
+}
+
+</table>

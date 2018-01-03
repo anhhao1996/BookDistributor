@@ -1,0 +1,55 @@
+﻿@model IEnumerable<PHSach.Models.Bill_Export>
+
+@{
+    ViewBag.Title = "DanhSachPhieuXuat";
+}
+
+<h2>Danh sách phiếu xuất</h2>
+
+<p>
+    <a class="btn btn-primary btnThemPhieuNhapp" href="~/Bill_Export/Create">Tạo phiếu xuất</a>
+</p>
+<table class="table" border="1">
+    <tr>
+        <th>
+            Mã Phiếu Xuât
+        </th>
+        <th>
+            Tên Đại Lý
+        </th>
+        <th>
+            Người Nhận Hàng
+        </th>
+        <th>
+            Ngày tạo phiếu
+        </th>
+        <th>
+            Tổng Cộng
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bill_Export_id)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Agency.Agency_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Recipients)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Total)
+        </td>
+        <td>
+            @Html.ActionLink("Chi tiết", "Details", new { id = item.Bill_Export_id })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,125 @@
+﻿@model IEnumerable<PHSach.Models.Debt_Agency>
+
+@{
+    ViewBag.Title = "Công nợ của đại lý ";
+}
+
+<form class="form-inline">
+    <div class="col-md-12 panel panel-primary">
+        <div class="panel-heading">Công Nợ của đại lý</div>
+        <div class="panel-body ">
+            <div class="col-md-4 daily">
+                <label for="keyword">Đại lý :</label>
+                <input class="form-control" id="keyword" type="text" placeholder="nhập mã đại lý hoặc tên đại lý" style="width:240px;">
+            </div>
+            <div class="col-md-4">
+                <label for="choosedate"> Chọn thời điểm : </label>
+                <input type="date" class="form-control" id="choosedate">
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-info btnseach"><i class="fa fa-search"></i> Tìm kiếm </button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-info btnrefresh"><i class="fa fa-refresh"></i> Làm mới </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="col-md-12 panel panel-info">
+    <div class="panel-heading">Cập nhật công nợ  mới nhất của đại lý</div>
+    <div class="panel-body">
+
+        <div class="col-md-12 div-agency">
+            <table class="table table-bordered table-hover table-agency">
+                <thead>
+                    <tr>
+                        <th>Mã đại lý</th>
+                        <th>Tên đại lý</th>
+                        <th>Số nợ</th>
+                        <th>Ngày cập nhật</th>
+                    </tr>
+                </thead>
+                <tbody class="agency-body">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(c => item.Agency_id)</td>
+                            <td>@Html.DisplayFor(c => item.Agency.Agency_name)</td>
+                            <td>@Html.DisplayFor(c => item.debt)</td>
+                            <td>@item.update_date.Value.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+  $(document).ready(function () {
+        $('.btnseach').click( function () {
+            var keyword = $('#keyword').val();
+            var date = $('#choosedate').val();
+            $('.noti').hide();
+            if (keyword.length === 0)
+            {
+                alert("Nhập mã sách cần tìm !");
+
+            }
+
+            else
+            {
+                if (date.length === 0)
+                {
+                    alert("Nhập ngày cần tìm !");
+                }
+                else
+                {
+                    $.ajax({
+                        url: "/Debt_Agency/debtcalculate",
+                        data: { keyword: keyword, date: date },
+                        dataType: "json",
+                        type: "GET",
+                        success: function (data) {
+                            $('.agency-body > tr').remove();
+                            if (!data.length) {
+                                $('.agency-body').append('<tr><td colspan="4">Không có dữ liệu hoặc tại thời điểm chọn đại lý chưa có nợ !</td></tr>');
+                            }                       
+                            else {
+                                var newdata = $.parseJSON(data);
+                                $.each(newdata, function (i, item) {
+                                    $('.agency-body').append('<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>' + item.debt + '</td><td>' + new Date(item.updatedate).toString("dd/MM/yyyy HH:mm:ss") + '</td><tr>');
+                                });
+                            }
+                           
+                        },
+                        error: function (a, b, c) {
+
+                        }
+                    });
+                }
+
+            }
+
+        });
+        $('.btnrefresh').click(function () {
+            
+            $('#keyword').val("");
+            $('#choosedate').val("");
+            $.ajax({
+                url: "/Debt_Agency/all",
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    $('.agency-body > tr').remove();
+                    var newdata = $.parseJSON(data);
+                    $.each(newdata, function (i, item) {
+                        var dt = new Date(item.updatedate);
+                        $('.agency-body').append('<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>' + item.debt + '</td><td>'+ new Date(item.updatedate).toString("dd/MM/yyyy hh:mm:ss tt")+ '</td><tr>');
+                    });
+                },
+            });
+        });
+
+  });
+</script>

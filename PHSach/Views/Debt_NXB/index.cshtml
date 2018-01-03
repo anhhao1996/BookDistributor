@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "StatisticNXB";
+}
+
+@model IEnumerable<PHSach.Models.Debt_NXB>
+
+@{
+    ViewBag.Title = "Công nợ của nhà xuất bản ";
+}
+
+<form class="form-inline">
+    <div class="col-md-12 panel panel-primary">
+        <div class="panel-heading">Tìm kiếm Công Nợ của Nhà xuất bản</div>
+        <div class="panel-body ">
+            <div class="col-md-5 nxb">
+                <label for="keyword">Nhà xuất bản :</label>
+                <input class="form-control" id="keyword" type="text" placeholder="Nhập mã hoặc tên nhà xuất bản" style="width:270px;">
+            </div>
+            <div class="col-md-4">
+                <label for="choosedate"> Thời điểm : </label>
+                <input type="date" class="form-control" id="choosedate" style="width:170px">
+            </div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-info btnseach" style="margin-right:15px;"><i class="fa fa-search"></i> Tìm kiếm </button>
+                <button type="button" class="btn btn-info btnrefresh"><i class="fa fa-refresh"></i> Làm mới </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="col-md-12 panel panel-info">
+    <div class="panel-heading">Cập nhật công nợ  mới nhất của Nhà xuất bản</div>
+    <div class="panel-body">
+        <div class="col-md-12 div-nxb">
+            <table class="table table-bordered table-hover table-nxb">
+                <thead>
+                    <tr>
+                        <th>Mã Nhà xuất bản</th>
+                        <th>Tên Nhà xuất bản</th>
+                        <th>Nợ cần trả nhà xuất bản</th>
+                        <th>Ngày cập nhật mới nhất</th>
+                    </tr>
+                </thead>
+                <tbody class="nxb-body">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(c => item.NXB_id)</td>
+                            <td>@Html.DisplayFor(c => item.NXB.NXB_name)</td>
+                            <td>@Html.DisplayFor(c => item.debt)</td>
+                            <td>@item.update_date.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+  $(document).ready(function () {
+        $('.btnseach').click( function () {
+            var keyword = $('#keyword').val();
+            var date = $('#choosedate').val();
+            $('.noti').hide();
+            if (keyword.length === 0)
+            {
+                alert("Nhập mã  hoặc tên nhà xuất bản cần tìm !");
+
+            }
+
+            else
+            {
+                if (date.length === 0)
+                {
+                    alert("Nhập ngày cần tìm !");
+                }
+                else
+                {
+                    $.ajax({
+                        url: "/Debt_NXB/debtcalculate",
+                        data: { keyword: keyword, date: date },
+                        type: "GET",
+                        success: function (data) {
+                            $('.nxb-body > tr').remove();
+                            if (!data.length)
+                            {
+                                $('.nxb-body').append('<tr><td colspan="4">Không có dữ liệu hoặc tại thời điểm chọn chưa nợ nhà xuất bản !</td></tr>');
+                            }
+                            else {
+                                var newdata = $.parseJSON(data);
+                                $.each(newdata, function (i, item) {
+                                    $('.nxb-body').append('<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>' + item.debt + '</td><td>' + new Date(item.updatedate).toString("dd/MM/yyyy HH:mm:ss") + '</td><tr>');
+                                });
+                            }
+                                    
+                        }
+                    });
+                }
+
+            }
+
+        });
+        $('.btnrefresh').click(function () {
+            $.ajax({
+                url: "/Debt_NXB/all",
+                dataType: "json",
+                type: "GET",
+                success: function (data) {
+                    $('.nxb-body > tr').remove();
+                    var newdata = $.parseJSON(data);
+                    $.each(newdata, function (i, item) {
+                        $('.nxb-body').append('<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>' + item.debt + '</td><td>' + new Date(item.updatedate).toString("dd/MM/yyyy hh:mm:ss tt") + '</td><tr>');
+                    });
+                },
+            });
+        });
+
+  });
+</script>
+

@@ -1,0 +1,89 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<div class="col-md-12 panel panel-primary">
+    <div class="panel-heading">Thống kê doanh thu</div>
+    <div class="noti alert alert-info" style="margin-top:10px;display:none"></div>
+    <div class="panel-body">
+        <form class="form-inline">
+            <div class="col-md-12  div-date">
+                <div class="col-md-4">
+                    <label for="startdate">Ngày bắt đầu: </label>
+                    <input type="date" class="form-control" id="startdate">
+                </div>
+                <div class="col-md-4">
+                    <label for="finishdate">Ngày  kết thúc: </label>
+                    <input type="date" class="form-control" id="finishdate">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-info btnseach"><i class="fa fa-search"></i> Tìm kiếm </button>
+                    <button type="button" class="btn btn-info btnrefresh" style="margin-left:15px;"><i class="fa fa-refresh"></i> Làm mới </button>
+                </div>
+            </div>
+        </form>
+            <div class="col-md-12 div-revenue-result" style="margin-top:40px;">
+                <form class="form-inline">
+                    <div class="form-group"   style="margin-left:110px;" >
+                        <label class="sr-only" for="total-revenue">Doanh thu :</label>
+                        <div class="input-group" >
+                            <input type="text" class="form-control" id="total-revenue" placeholder="Doanh thu" disabled>
+                            <div class="input-group-addon">VNĐ</div
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.btnseach').click(function () {
+            var startdate = $('#startdate').val();
+            var finishdate = $('#finishdate').val();
+            $('#total-revenue').val("");
+            if(startdate.length === 0)
+            {
+                alert("Bạn chưa nhập ngày bắt đầu !");
+            }
+            else
+            {
+                if(finishdate.length === 0)
+                {
+                    alert("Bạn chưa nhập ngày kết thúc !");
+                }
+                else
+                {
+                    if (new Date(finishdate) < new Date(startdate))
+                    {
+                        alert("Ngày kết thúc phải lớn hơn ngày bắt đầu !");
+                    }
+                    else
+                    {
+                        $.ajax({
+                            url: "/Revenue/calculateByday",
+                            data: { startdate: startdate, finishdate: finishdate },
+                            type: "GET",
+                            datatype: "json",
+                            success: function (result) {
+                                if (result.length != 0) {
+                                    $('#total-revenue').val(result);
+                                }
+                                else {
+                                    $('#total-revenue').val('0');
+                                }
+                            }
+                        });
+                    }
+                    
+                }
+            }
+        });
+        $('.btnrefresh').click(function () {
+            $('#startdate').val("");
+            $('#finishdate').val("");
+            $('#total-revenue').val("");
+
+        });
+    });
+</script>
+

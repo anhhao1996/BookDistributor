@@ -1,0 +1,46 @@
+﻿@model PHSach.Models.Bill_Export
+
+@{
+    ViewBag.Title = "Details";
+    var a = (List<PHSach.Models.Detail_Bill_Export>)ViewBag.ctpx;
+}
+
+<h2>Chi tiết phiếu xuất</h2>
+
+    <a class="btn btn-primary btnThemPhieuXuat" href="~/Bill_Export/Index">Quay về</a>
+    <hr />
+    <table class="table" border="1">
+        <tr>
+            <th>
+                Mã sách
+            </th>
+            <th>
+                Số lượng
+            </th>
+            <th>
+                Giá xuất
+            </th>
+            <th>
+                Thành tiền
+            </th>
+        </tr>
+
+        @foreach (var item in a)
+        {
+            <tr>
+                <td>
+                    @item.Book_id
+                </td>
+                <td>
+                    @item.Quantity
+                </td>
+                <td>
+                    @item.Cost
+                </td>
+                <td>
+                    @item.Total
+                </td>
+            </tr>
+        }
+
+    </table>

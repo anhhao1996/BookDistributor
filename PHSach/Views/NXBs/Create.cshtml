@@ -1,0 +1,55 @@
+﻿@model PHSach.Models.NXB
+
+@{
+    ViewBag.Title = "Create";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()    
+		<!--content-->
+<form>
+    <div class="col-md-12 panel panel-primary">
+        <div class="panel-heading">Thêm Nhà Xuất Bản</div>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="panel-body">
+            <div class="col-md-12">
+                <div class="col-sm-3 form-group">
+                    <label for="disabledInput">Tên NXB:</label>
+                    @Html.EditorFor(model => model.NXB_name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.NXB_name, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="disabledInput">Điện thoại</label>
+                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", @type="number" } })
+                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                </div>
+                <div class="col-sm-3 form-group">
+                    <label for="email">Số tài khoản:</label>
+                    @Html.EditorFor(model => model.AcountNumber, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+                    @Html.ValidationMessageFor(model => model.AcountNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <form class="form-inline">
+                <div class="col-md-12 nhapphieu">
+                    <div class="col-sm-6 form-group">
+                        <label for="email">Địa chỉ:</label>
+                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-sm-6 form-group">
+                        <label for="email">Email:</label>
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="col-sm-8 btn-group form-group">
+            <button type="submit" class="btn btn-primary btnThemPhieuNhap"><i class="fa fa-plus-square"></i> Thêm</button>
+            <a class="btn btn-success btnLuuPhieuNhap" href="~/NXBs/Index">Danh sách NXB</a>
+        </div>
+        </div>
+</form>
+}

@@ -1,0 +1,178 @@
+﻿@model PHSach.Models.Inventory_Agency
+@{
+    ViewBag.Title = "Index";
+    
+}
+    <div class="col-md-12 panel panel-primary">
+        <div class="panel-heading">Tìm kiếm lịch sử tồn kho đại lý</div>
+        <div class="panel-body ">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <label for="madaily">Đại lý</label>
+                        <select class="form-control" id="madaily" style="width:300px;">
+                            <option value="-1" selected>-----chọn đại lý-----</option>
+                            @foreach(var item in (Dictionary<int, string>)ViewBag.agency)
+                            {
+                                <option value="@item.Key">@item.Value</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6 sach">
+                        <label for="masach">Sách:</label>
+                        <select class="form-control" id="masach" >
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12" style="margin-top:10px;">
+                    <div class="col-md-4">
+                        <label for="choosedate"> Chọn ngày : </label>
+                        <input class="form-control" id="choosedate" type="date"  />
+                    </div>
+                    <div class="col-md-4" style="margin-top:25px;">
+                        <button type="button" class="btn btn-info btnseach"><i class="fa fa-search" ></i> Tìm kiếm </button>
+                        <button type="button" class="btn btn-info btnrefresh"  style="margin-left:15px;"><i class="fa fa-refresh"></i> Làm mới </button>
+                    </div>
+                </div>
+            }
+            
+    </div>
+<div class="col-md-12 panel panel-primary">
+    <div class="panel-heading">Kết quả tìm kiếm</div>
+    <div class="noti alert alert-info" style="margin-top:10px;display:none"></div>
+    <div class="panel-body">
+        <form class="form-inline">
+            <div class="col-md-12  div_Masach">
+                <div class="col-sm-4 form-group">
+                    <label for="book_id"><b>Mã sách:</b></label>
+                    <input class="form-control" id="book_id" type="text" disabled value="">
+                </div>
+                <div class="col-sm-8 form-group">
+                    <label for="book_name"><b>Tên sách :</b></label>
+                    <input class="form-control" id="book_name" type="text" disabled value="" style="width:400px">
+                </div>
+            </div>
+            <div class="col-md-12 div_soluong" style="margin-top:10px;">
+                <div class="col-sm-4 form-group">
+                    <label for="quantity"><b>Số lượng tồn :</b></label>
+                    <input class="form-control" id="quantity" type="number" disabled value="" style="width:140px;">
+                </div>
+                <div class="col-sm-8 form-group">
+                    <label for="updatedate"><b>Ngày cập nhật gần nhất :</b></label>
+                    <input class="form-control" id="updatedate" type="text" disabled value="" style="width:302px;">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="col-md-12 panel panel-info">
+    <div class="panel-heading">Tồn Kho</div>
+    <div class="panel-body">
+
+        <div class="col-md-12 ">
+            <table class="table table-bordered table-hover" style="overflow:scroll">
+                <thead>
+                    <tr>
+                        <th>Mã đại lý</th>
+                        <th>Tên đại lý</th>
+                        <th>Tên sách</th>
+                        <th>Số lượng tồn</th>
+                        <th>Ngày cập nhật mới nhất</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in (List<PHSach.Models.Inventory_Agency>)ViewBag.listbook)
+                    {
+                        <tr>
+                            <td>@item.Agency_id</td>
+                            <td>@item.Agency.Agency_name</td>
+                            <td>@item.Book.Book_name</td>
+                            <td>@(item.deliver_quantity-item.repay_quantity)</td>
+                            <td>@item.UpdatedDate</td>
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#madaily').change(function () {
+            var id = $(this).val();
+            $("#masach option").remove();
+            $.ajax({
+                url: "/Inventory_Agency/listbookbyagency" + "/" + id,
+                type: "GET",
+                success: function (data) {
+                    $.each(data, function (i, item) {
+                        $("#masach").append('<option value=' + item.id + '>' + item.name + '</option>');
+
+                    });
+                }
+            });
+            
+            
+        });
+
+        $('.btnseach').click( function () {
+            var date = $('#choosedate').val();
+            madaily = $('#madaily').val();
+            masach = $('#masach').val();
+            $('.noti').hide();
+            if (date.length === 0)
+            {
+                alert("Nhập ngày cần tìm !");
+            }
+            else
+            {
+                $.ajax({
+                    url: "/Inventory_Agency/HistoryAgency",
+                    data: { madaily:madaily, masach: masach, choosedate: date },
+                    dataType: "json",
+                    type: "POST",
+                    success: function (data) {
+                        if (typeof(data['id'])!== 'undefined')
+                        {
+                            $('#book_id').val(data['id']);
+                            $('#book_name').val(data['bookname']);
+                            $('#quantity').val(data['quantity']);
+                            $('#updatedate').val(data['updatedate']);
+                        }
+                        else
+                        {
+                            $('.noti').html(" Không tìm thấy dữ liệu theo yêu cầu ! ");
+                            $('.noti').css('display', 'block');
+                            $('#book_id').val("");
+                            $('#book_name').val("");
+                            $('#quantity').val("");
+                            $('#updatedate').val("");
+                        }
+                    },
+                    error: function (a, b, c) {
+
+                    }
+                });
+            }
+            
+
+        });
+        $('.btnrefresh').click(function () {
+            $('#book_id').val("");
+            $('#book_name').val("");
+            $('#quantity').val("");
+            $('#updatedate').val("");
+            $('.noti').html("");
+            $('.noti').css('display', 'none');
+            $('#madaily').prop('selectedIndex', 0);
+            $("#masach option").remove();
+            $('#choosedate').val("");
+        });
+        
+  });
+</script>

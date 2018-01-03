@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+    <form class="form-inline">
+        <div class="col-md-12 panel panel-primary">
+            <div class="panel-heading">Tìm kiếm lịch sử tồn kho</div>
+            <div class="panel-body ">
+                <div class="col-md-4 masachtk">
+                    <label for="masach">Mã sách :</label>
+                    <input class="form-control" id="masach" type="text" placeholder="nhập mã sách">
+                </div>
+                <div class="col-md-4">
+                    <label for="choosedate"> Chọn ngày : </label>
+                    <input type="date" class="form-control" id="choosedate">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-info btnseach"><i class="fa fa-search"></i> Tìm kiếm </button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-info btnrefresh"><i class="fa fa-refresh"></i> Làm mới </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="col-md-12 panel panel-primary">
+        <div class="panel-heading">Kết quả tìm kiếm</div>
+            <div class="noti alert alert-info" style="margin-top:10px;display:none" ></div>
+             <div class="panel-body">
+                <form class="form-inline">
+                    <div class="col-md-12  div_Masach">
+                        <div class="col-sm-4 form-group">
+                            <label for="book_id"><b>Mã sách:</b></label>
+                            <input class="form-control" id="book_id" type="text" disabled value="" >
+                        </div>
+                        <div class="col-sm-8 form-group" >
+                            <label for="book_name"><b>Tên sách :</b></label>
+                            <input class="form-control" id="book_name" type="text" disabled value="" style="width:400px">
+                        </div>
+                     </div>
+                    <div class="col-md-12 div_soluong" style="margin-top:10px;" >
+                        <div class="col-sm-4 form-group">
+                            <label for="quantity"><b>Số lượng tồn :</b></label>
+                            <input class="form-control" id="quantity" type="number" disabled value="" style="width:140px;">
+                        </div>
+                        <div class="col-sm-8 form-group" >
+                            <label for="updatedate"><b>Ngày cập nhật gần nhất :</b></label>
+                            <input class="form-control" id="updatedate" type="text" disabled value="" style="width:302px;">
+                        </div>
+                      </div>
+                </form>
+            </div>
+        </div>
+    <div class="col-md-12 panel panel-info">
+        <div class="panel-heading">Tồn Kho</div>
+        <div class="panel-body">
+
+            <div class="col-md-12 div-inventory">
+                <table class="table table-bordered table-hover table-inventory" >
+                    <thead>
+                        <tr>
+                            <th >Mã sách</th>
+                            <th>Tên sách</th>
+                            <th>Số lượng tồn</th>
+                            <th>Ngày cập nhật mới nhất</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                            @foreach (var item in (IList<PHSach.Models.Inventory_Book>)ViewBag.listbook)
+                            {
+                                <tr>
+                                    <td>@item.Book_id</td>
+                                    <td>@item.Book.Book_name</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.UpdatedDate.Value.ToString("dd/MM/yyyy HH:mm:ss")</td> 
+                                </tr>
+                            }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</div>
+<script>
+  $(document).ready(function () {
+        $('.btnseach').click( function () {
+            var masach = $('#masach').val();
+            var date = $('#choosedate').val();
+            $('.noti').hide();
+            if (masach.length === 0)
+            {
+                alert("Nhập mã sách cần tìm !");
+
+            }
+
+            else
+            {
+                if (date.length === 0)
+                {
+                    alert("Nhập ngày cần tìm !");
+                }
+                else
+                {
+                    $.ajax({
+                        url: "/Inventory_Book/HistoryInventory",
+                        data: { masach: masach, choosedate: date },
+                        dataType: "json",
+                        type: "POST",
+                        success: function (data) {
+                            if (typeof(data['id'])!== 'undefined')
+                            {
+                                $('#book_id').val(data['id']);
+                                $('#book_name').val(data['bookname']);
+                                $('#quantity').val(data['quantity']);
+                                $('#updatedate').val(data['updatedate']);
+                            }
+                            else
+                            {
+                                $('.noti').html(" Không tìm thấy dữ liệu theo yêu cầu ! ");
+                                $('.noti').css('display', 'block');
+                                $('#book_id').val("");
+                                $('#book_name').val("");
+                                $('#quantity').val("");
+                                $('#updatedate').val("");
+                            }
+                        },
+                        error: function (a, b, c) {
+
+                        }
+                    });
+                }
+
+            }
+
+        });
+        $('.btnrefresh').click(function () {
+            $('#book_id').val("");
+            $('#book_name').val("");
+            $('#quantity').val("");
+            $('#updatedate').val("");
+            $('.noti').html("");
+            $('.noti').css('display', 'none');
+            $('#masach').val("");
+            $('#choosedate').val("");
+        });
+
+  });
+</script>

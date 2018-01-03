@@ -1,0 +1,50 @@
+﻿@model IEnumerable<PHSach.Models.Report_Agency>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Danh sách phiếu báo cáo</h2>
+
+<p>
+    <a class="btn btn-primary btnThemPhieuNhapp" href="~/Report_Agency/Create">Tạo phiếu báo cáo</a>
+</p>
+<table class="table" border="1">
+    <tr>
+        <th>
+            Mã Phiếu Báo Cáo
+        </th>
+        <th>
+            Tên Đại Lý
+        </th>
+        <th>
+            Ngày tạo phiếu
+        </th>
+        <th>
+            Tổng Cộng
+        </th>
+        <th></th>
+    </tr>
+    
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Report_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Agency.Agency_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+                <td>
+                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Report_id })
+                </td>
+            </tr>
+        } 
+
+</table>
